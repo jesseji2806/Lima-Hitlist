@@ -1,5 +1,7 @@
 .App {
   text-align: center;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 20px;
 }
 
 .App-logo {
@@ -27,6 +29,17 @@
 .App-link {
   color: #61dafb;
 }
+
+.button {
+  color:white;
+  margin: 10px;
+}
+
+.hit-table {
+  margin: 10px;
+  width: 80%;
+}
+
 
 @keyframes App-logo-spin {
   from {
