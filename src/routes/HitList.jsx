@@ -22,7 +22,7 @@ const HitList = () => {
 
 
     const sortData = (hits) => {
-        if (hits.length === 0) return;
+        if (hits.length === 0) return [];
         const sortedData = [];
         const players = [];
         let index = 0;
