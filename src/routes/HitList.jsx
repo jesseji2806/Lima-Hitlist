@@ -11,7 +11,6 @@ class Hit {
 
     add_hit(hit, day) {
         this.hits[day - 1] = hit;
-        console.log(this.hits);
     }
 };
 
@@ -28,8 +27,6 @@ const HitList = () => {
         let index = 0;
         for (const hit in hits) {
             const { IGN, hitsDone, day } = hits[hit];
-            console.log(IGN + hitsDone + day);
-            console.log(players);
             if (players.includes(IGN)) {
                 let playerIndex = players.findIndex((element) => element === IGN);
                 sortedData[playerIndex].add_hit(hitsDone, day);
@@ -75,9 +72,9 @@ const HitList = () => {
                             <tbody>
                                 {cbData.map(({ IGN, hits }) => {
                                     return (
-                                        <tr>
-                                            <th>{IGN}</th>
-                                            {hits.map((item) => <th>{item}</th>)}
+                                        <tr key={"hits" + IGN}>
+                                            <th key={IGN}>{IGN}</th>
+                                            {hits.map((item, index) => <th key={IGN + index}>{item}</th>)}
                                         </tr>)
                                 })}
                             </tbody>
