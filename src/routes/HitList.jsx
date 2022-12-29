@@ -3,51 +3,28 @@ import { useParams} from 'react-router-dom';
 import Helmet from "react-helmet";
 import Axios from "axios";
 
-class Hit {
-    constructor(IGN) {
-        this.IGN = IGN;
-        this.hits = [0, 0, 0, 0, 0];
-    }
-
-    add_hit(hit, day) {
-        this.hits[day - 1] = hit;
-    }
-};
-
 const HitList = () => {
     const [cbData, setCbData] = useState([]);
     const [cbFound, setCbFound] = useState(false);
-    const { id } = useParams();
+    const [cbTotal, setCbTotal] = useState([]);
+    const { guildId, id } = useParams();
 
 
-    const sortData = (hits) => {
-        if (hits.length === 0) return [];
-        const sortedData = [];
-        const players = [];
-        let index = 0;
-        for (const hit in hits) {
-            const { IGN, hitsDone, day } = hits[hit];
-            if (players.includes(IGN)) {
-                let playerIndex = players.findIndex((element) => element === IGN);
-                sortedData[playerIndex].add_hit(hitsDone, day);
-            } else {
-                let player = new Hit(IGN);
-                players[index] = IGN;
-                player.add_hit(hitsDone, day);
-                sortedData[index] = player;
-                ++index;
-            }
-        }
-        return sortedData;
-
+    const sortData = (CB) => {
+        const { hitList } = CB;
+        if (hitList.length === 0) return [];
+        
+        return hitList.filter(player => player.nbAcc > 0);
     };
 
     useEffect(() => {
-        Axios.get("https://immense-taiga-72357.herokuapp.com/hitlist/"+id).then((res) => {
-            setCbData(sortData(res.data.data));
+        Axios.get(guildId + "/hitlist/" + id).then((res) => {
+            const data = res.data.data;
+            setCbData(sortData(data));
             setCbFound(true);
+            setCbTotal(data.hitsDone);
         });
-      }, [id]);
+      }, [guildId, id]);
     
     return (
         <>
@@ -70,13 +47,23 @@ const HitList = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {cbData.map(({ IGN, hits }) => {
+                                {cbData.map((player) => {
                                     return (
-                                        <tr key={"hits" + IGN}>
-                                            <th key={IGN}>{IGN}</th>
-                                            {hits.map((item, index) => <th key={IGN + index}>{item}</th>)}
+                                        <tr key={"hits" + player.IGN}>
+                                            <th key={player.IGN}>{player.IGN}</th>
+                                            {player.hits.map(hit => <th key={player.IGN + hit.day}>{hit.hitsDone}</th>)}
                                         </tr>)
                                 })}
+                            </tbody>
+                            <tbody>
+                                <tr>
+                                    <th>Total</th>
+                                    {cbTotal.map((hits, index) => {
+                                        return (
+                                            <th key={`total${index}`}>{hits}</th>
+                                        )
+                                    })}
+                                </tr>
                             </tbody>
                         </table>
                     ) : (

@@ -1,24 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { Outlet, Link } from 'react-router-dom'
+import { Outlet, Link, useParams } from 'react-router-dom'
 import Axios from "axios";
 
 
 const Layout = () => {
     const [data, setData] = useState();
+    const [clan, setClan] = useState();
+    const { guildId } = useParams();
 
     useEffect(() => {
-      Axios.get("https://immense-taiga-72357.herokuapp.com/").then((res) => {
-          setData(Math.max.apply(null, res.data));
-      });
-    }, []);
+        Axios.get(guildId).then((res) => {
+            setClan(res.data.clan);
+            setData(Math.max.apply(null, res.data.cbIds));
+        });
+    }, [guildId]);
     
 
     return (
         <>
-            <h1>Aquarium Hit List</h1>
+            <h1>{clan} Hit List</h1>
             <nav>
                 <div className="btn-group btn-group-lg btn-group-justified">
-                    <Link to="/">
+                    <Link to="">
                         <button className="btn btn-success button">Home</button>
                     </Link>
                     {(data) && (
